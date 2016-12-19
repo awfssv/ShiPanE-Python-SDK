@@ -54,3 +54,22 @@ ShiPanE-Python-SDK
 
 .. |实盘易-股票自动交易| image:: http://pub.idqqimg.com/wpa/images/group.png
    :target: http://shang.qq.com/wpa/qunwpa?idkey=1ce867356702f5f7c56d07d5c694e37a3b9a523efce199bb0f6ff30410c6185d%22
+
+ShiPanE_sdk.py 新增功能特点：
+1. 同步实盘持仓
+2. 自动按模拟盘与实盘的资金比例折算下单量
+3. 针对聚宽函数对应增加下单函数，调用方法接近聚宽函数，减少策略函数修改量
+4. 增加下单异常，微信通知，实时掌握最新动态
+调用方式：
+import shipane_sdk
+def process_initialize(context):
+    # 创建 JoinQuantExecutor 对象
+    # 必选参数：context (比原调用方式增加该参数)
+    # 可选参数包括：host, port, title, account 等
+    # 请见下面的 IP 替换为实际 IP
+    g.__executor = shipane_sdk.JoinQuantExecutor(context, host='xxx.xxx.xxx.xxx', port=8888, timeout=5.0, key='123456')
+    g.__executor.order2spe = True  #同步订单到SPE
+    g.__executor.send2weixin = True  #允许发送微信通知
+    
+调用下单函数与聚宽格式一致，仅需在下单函数名前加 g.__executor. 以及在函数名后加 _spe 即可，参数一致，最大限度减少策略代码修改量
+g.__executor.order_target_value_spe(security, value)
